@@ -56,7 +56,7 @@ const JoinSequenceGame: React.FC = () => {
 			}
 			const data = snapshot.val() as SequenceGame;
 			if (data?.game_status === GameStatus.INPROGRESS) {
-				navigation.navigate("SequenceBoard", {
+				navigation.navigate("sequence-board", {
 					gameUUID: gameUUID?.trim(),
 				});
 				return;

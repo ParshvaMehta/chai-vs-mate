@@ -21,12 +21,12 @@ import { useLocalSearchParams } from "expo-router";
 import { AuthContext } from "../../contexts/AuthContexts";
 
 export function SequenceBoard() {
+	useKeepAwake();
 	const navigation = useNavigation();
 	const local = useLocalSearchParams();
 	const { gameUUID } = local;
-
+	const dbId = `games/sequence/${gameUUID}`;
 	const { user } = useContext(AuthContext);
-	const dbId = useMemo(() => `games/sequence/${gameUUID}`, [gameUUID]);
 	const gameRef = ref(FIREBASE_DB, dbId);
 	const [gameData, setGameData] = useState<SequenceGame>();
 	const board = useMemo(() => gameData?.board, [gameData]);
@@ -177,7 +177,6 @@ export function SequenceBoard() {
 					}
 				}
 			}
-			console.log(game_status, winner, completed_sequence);
 			const newCard = deck.pop() as string;
 			players[turn_idx].my_cards.push(newCard);
 			const number_of_players = players.length;
@@ -327,7 +326,7 @@ export function SequenceBoard() {
 				</View>
 			);
 		}
-		useKeepAwake();
+
 		return (
 			<View style={styles.container}>
 				<View style={styles.turn}>
@@ -417,3 +416,5 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 });
+
+export default SequenceBoard;
