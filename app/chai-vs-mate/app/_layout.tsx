@@ -93,6 +93,7 @@ function RootLayoutNav() {
 				<Stack initialRouteName="login" screenOptions={{ headerShown: false }}>
 					<Stack.Screen name="(users)" options={{ headerShown: false }} />
 					<Stack.Screen name="(app)" options={{ headerShown: false }} />
+					<Stack.Screen name="(sequence)" options={{ headerShown: false }} />
 					<Stack.Screen name="modal" options={{ presentation: "modal" }} />
 				</Stack>
 			</AuthProvider>

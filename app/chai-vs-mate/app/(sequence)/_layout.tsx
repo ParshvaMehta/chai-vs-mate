@@ -5,14 +5,18 @@ import { AuthContext } from "../../contexts/AuthContexts";
 
 export default function TabLayout() {
 	const { user } = useContext(AuthContext);
-	if (user) {
-		return <Redirect href="/(app)/dashboard" />;
+	if (!user) {
+		return <Redirect href="/(users)/login" />;
 	}
 
 	return (
-		<Stack initialRouteName="login">
-			<Stack.Screen name="login" options={{ headerShown: false }} />
-			<Stack.Screen name="signup" options={{ headerShown: false }} />
+		<Stack>
+			<Stack.Screen name="index" options={{ headerShown: false }} />
+			<Stack.Screen name="join-sequence" options={{ headerShown: false }} />
+			<Stack.Screen
+				name="sequence-waiting-area"
+				options={{ headerShown: true, title: "Waiting zone" }}
+			/>
 		</Stack>
 	);
 }

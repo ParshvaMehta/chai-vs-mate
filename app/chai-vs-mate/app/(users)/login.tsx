@@ -15,7 +15,7 @@ import { validateEmail } from "../../constants/Utils";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import InputWithIcon from "../../components/Input/InputWithIcon";
 import { Theme } from "../../constants/Colors";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 import { AuthContext } from "../../contexts/AuthContexts";
 
 const LoginScreen = () => {

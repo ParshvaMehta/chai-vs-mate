@@ -15,7 +15,7 @@ const gamesData = [
 		id: "1",
 		title: "Game of Jack",
 		description: "A challenging board game for 7+ ages.",
-		screen: "SequenceLanding",
+		screen: "(sequence)",
 		icon: "color-wand",
 		isActive: true,
 	},

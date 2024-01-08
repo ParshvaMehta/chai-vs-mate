@@ -14,11 +14,17 @@ import { FIREBASE_AUTH } from "../constants/FireBaseConfig";
 import { createContext, useEffect, useState, ReactNode } from "react";
 
 interface AuthContextProps {
-	createUser: (email: string, password: string) => Promise<UserCredential>;
+	createUser: (
+		email: string,
+		password: string
+	) => Promise<UserCredential | void>;
 	user: User | null;
-	loginUser: (email: string, password: string) => Promise<UserCredential>;
+	loginUser: (
+		email: string,
+		password: string
+	) => Promise<UserCredential | void>;
 	logOut: () => Promise<void>;
-	updateUser: (displayName: string) => Promise<void | UserCredential>;
+	updateUser: (displayName: string) => Promise<UserCredential | void>;
 	loading: boolean;
 }
 
