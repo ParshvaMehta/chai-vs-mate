@@ -1,4 +1,3 @@
-import { signInWithEmailAndPassword, Auth } from "firebase/auth";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
 	View,
@@ -18,10 +17,9 @@ import InputWithIcon from "../../components/Input/InputWithIcon";
 import { Theme } from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../contexts/AuthContexts";
-import { Redirect } from "expo-router";
 
 const LoginScreen = () => {
-	const { loginUser, user } = useContext(AuthContext);
+	const { loginUser } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -40,7 +38,6 @@ const LoginScreen = () => {
 		setLoading(true);
 		try {
 			await loginUser(email, password);
-			return navigation.navigate("/dashboard");
 		} catch (error: any) {
 			console.log(error);
 			const errorMessage =

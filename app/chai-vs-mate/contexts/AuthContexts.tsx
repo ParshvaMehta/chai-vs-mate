@@ -18,6 +18,7 @@ interface AuthContextProps {
 	user: User | null;
 	loginUser: (email: string, password: string) => Promise<UserCredential>;
 	logOut: () => Promise<void>;
+	updateUser: (displayName: string) => Promise<void | UserCredential>;
 	loading: boolean;
 }
 
@@ -49,6 +50,22 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		return signOut(auth);
 	};
 
+	const updateUser = async (displayName: string) => {
+		setLoading(true);
+		try {
+			const user = auth?.currentUser;
+			if (user) {
+				await updateProfile(auth?.currentUser, {
+					displayName,
+				});
+			}
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
 			setUser(currentUser);
@@ -65,6 +82,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		user,
 		loginUser,
 		logOut,
+		updateUser,
 		loading,
 	};
 

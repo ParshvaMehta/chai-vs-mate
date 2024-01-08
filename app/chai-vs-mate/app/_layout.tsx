@@ -90,8 +90,9 @@ function RootLayoutNav() {
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 			<AuthProvider>
-				<Stack initialRouteName="login">
+				<Stack initialRouteName="login" screenOptions={{ headerShown: false }}>
 					<Stack.Screen name="(users)" options={{ headerShown: false }} />
+					<Stack.Screen name="(app)" options={{ headerShown: false }} />
 					<Stack.Screen name="modal" options={{ presentation: "modal" }} />
 				</Stack>
 			</AuthProvider>

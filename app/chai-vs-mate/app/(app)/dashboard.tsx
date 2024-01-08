@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Theme } from "../../constants/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "expo-router";
 
 const gamesData = [
 	{
@@ -41,7 +42,8 @@ const gamesData = [
 	},
 ];
 
-const Dashboard: React.FC<{ navigation: any }> = ({ navigation }) => {
+const Dashboard: React.FC = () => {
+	const navigation = useNavigation();
 	const renderGameItem = ({ item }) => {
 		let style = {
 			gameItem: styles.gameItem,

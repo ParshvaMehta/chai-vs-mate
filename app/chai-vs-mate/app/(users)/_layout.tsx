@@ -20,7 +20,7 @@ export default function TabLayout() {
 	const colorScheme = useColorScheme();
 	const { user } = useContext(AuthContext);
 	if (user) {
-		return <Redirect href="/dashboard" />;
+		return <Redirect href="/(app)/dashboard" />;
 	}
 
 	return (
