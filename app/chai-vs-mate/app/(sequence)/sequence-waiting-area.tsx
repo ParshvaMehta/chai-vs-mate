@@ -27,7 +27,6 @@ import { AuthContext } from "../../contexts/AuthContexts";
 
 const SequenceWaitingArea: React.FC = () => {
 	const navigation = useNavigation();
-	console.info(navigation);
 	const waitingAreaRef = useRef<boolean>(false);
 	const beforeRemoveRef = useRef<boolean>(false);
 	const { user } = useContext(AuthContext);
@@ -106,7 +105,7 @@ const SequenceWaitingArea: React.FC = () => {
 		onValue(gameRef, async (snapshot) => {
 			const data = snapshot.val() as SequenceGame;
 			if (data?.game_status === GameStatus.COMPLETED) {
-				navigation.navigate("SequenceBoard", { gameUUID });
+				navigation.navigate("sequence-board", { gameUUID });
 				return;
 			}
 			if (data?.game_status === GameStatus.INPROGRESS) {
@@ -118,11 +117,11 @@ const SequenceWaitingArea: React.FC = () => {
 						"Unauthorized!",
 						"You are not part of this game, please check the game id"
 					);
-					navigation.navigate("/(sequence)/index");
+					navigation.navigate("(sequence)/index");
 					return;
 				}
 
-				navigation.navigate("SequenceBoard", { gameUUID });
+				navigation.navigate("sequence-board", { gameUUID });
 				return;
 			}
 			await setGameData(data);
@@ -184,7 +183,7 @@ const SequenceWaitingArea: React.FC = () => {
 				next_turn_idx,
 			});
 			waitingAreaRef.current = true;
-			navigation.navigate("SequenceBoard", { gameUUID });
+			navigation.navigate("sequence-board", { gameUUID });
 		} catch (e) {
 			console.error(e);
 		}

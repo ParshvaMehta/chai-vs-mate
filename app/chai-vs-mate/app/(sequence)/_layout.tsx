@@ -10,13 +10,14 @@ export default function TabLayout() {
 	}
 
 	return (
-		<Stack>
-			<Stack.Screen name="index" options={{ headerShown: false }} />
+		<Stack initialRouteName="sequence-landing">
+			<Stack.Screen name="sequence-landing" options={{ headerShown: false }} />
 			<Stack.Screen name="join-sequence" options={{ headerShown: false }} />
 			<Stack.Screen
 				name="sequence-waiting-area"
 				options={{ headerShown: true, title: "Waiting zone" }}
 			/>
+			<Stack.Screen name="sequence-board" options={{ headerShown: false }} />
 		</Stack>
 	);
 }
