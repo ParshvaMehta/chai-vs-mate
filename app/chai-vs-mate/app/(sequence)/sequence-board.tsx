@@ -213,7 +213,7 @@ export function SequenceBoard() {
 			setSelectedCard("");
 		}
 	};
-	const renderTurn = (title = "", index: number, size = 15) => {
+	const renderTurn = (title = "", index: number = -1, size = 15) => {
 		const turnPlayer = gameData?.players[index];
 		const isYou = turnPlayer?.uid === user?.uid;
 		if (!turnPlayer) {
@@ -319,7 +319,7 @@ export function SequenceBoard() {
 					<View>{renderWinner(gameData?.winner)}</View>
 					<TouchableOpacity
 						style={styles.button}
-						onPress={() => navigation.navigate("SequenceLanding")}
+						onPress={() => navigation.navigate("sequence-landing")}
 					>
 						<Text style={styles.buttonText}>Let's Play Again!</Text>
 					</TouchableOpacity>
@@ -330,8 +330,8 @@ export function SequenceBoard() {
 		return (
 			<View style={styles.container}>
 				<View style={styles.turn}>
-					{renderTurn("Turn", gameData.turn_idx)}
-					{renderTurn("Next", gameData.next_turn_idx)}
+					{renderTurn("Turn", gameData?.turn_idx)}
+					{renderTurn("Next", gameData?.next_turn_idx)}
 				</View>
 				<ScrollView contentContainerStyle={styles.deck}>
 					{renderBoard()}
