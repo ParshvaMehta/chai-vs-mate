@@ -36,18 +36,36 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	const createUser = async (email: string, password: string) => {
 		setLoading(true);
-		return createUserWithEmailAndPassword(auth, email, password);
+		try {
+			return createUserWithEmailAndPassword(auth, email, password);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const loginUser = (email: string, password: string) => {
 		setLoading(true);
-		console.log(email, password);
-		return signInWithEmailAndPassword(auth, email, password);
+		try {
+			return signInWithEmailAndPassword(auth, email, password);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setLoading(false);
+		}
 	};
 
-	const logOut = () => {
+	const logOut = async () => {
 		setLoading(true);
-		return signOut(auth);
+		try {
+			await signOut(auth);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setLoading(false);
+		}
+		return;
 	};
 
 	const updateUser = async (displayName: string) => {

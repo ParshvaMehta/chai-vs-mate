@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
 	View,
 	Text,
@@ -12,28 +12,19 @@ import {
 	Platform,
 } from "react-native";
 import { validateEmail } from "../../constants/Utils";
-import {
-	createUserWithEmailAndPassword,
-	Auth,
-	updateProfile,
-} from "firebase/auth";
-import { FIREBASE_AUTH } from "../../constants/FireBaseConfig";
 import InputWithIcon from "../../components/Input/InputWithIcon";
 import { Theme } from "../../constants/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../contexts/AuthContexts";
 
 const SignupScreen: React.FC = () => {
 	const navigation = useNavigation();
+	const { createUser, loading, updateUser } = useContext(AuthContext);
 	const [displayName, setDisplayName] = useState<string>("");
-
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
-
-	const auth: Auth = FIREBASE_AUTH;
-
 	const passwordInputRef = useRef<TextInput>(null);
 	const confirmInputRef = useRef<TextInput>(null);
 	const emailInputRef = useRef<TextInput>(null);
@@ -53,20 +44,10 @@ const SignupScreen: React.FC = () => {
 			Alert.alert("Validation Error", "Passwords do not match.");
 			return;
 		}
-
-		setLoading(true);
-
 		try {
-			const response = await createUserWithEmailAndPassword(
-				auth,
-				email,
-				password
-			);
-			// Update the display name in Firebase Auth
+			const response = await createUser(email, password);
 			if (response.user) {
-				await updateProfile(response.user, {
-					displayName: displayName.trim(),
-				});
+				await updateUser(displayName.trim());
 			}
 		} catch (error: any) {
 			console.log(error);
@@ -75,8 +56,6 @@ const SignupScreen: React.FC = () => {
 					? "User not found. Please check your email."
 					: "Sign up failed. Please check your credentials.";
 			Alert.alert("Sign Up Failed", errorMessage);
-		} finally {
-			setLoading(false);
 		}
 	};
 

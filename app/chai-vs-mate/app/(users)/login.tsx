@@ -19,11 +19,10 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../contexts/AuthContexts";
 
 const LoginScreen = () => {
-	const { loginUser } = useContext(AuthContext);
+	const { loginUser, loading } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
 	const passwordInputRef = useRef<TextInput>(null);
 	const handleLoginWithEmail = async () => {
 		if (!email || !password) {
@@ -35,7 +34,6 @@ const LoginScreen = () => {
 			Alert.alert("Validation Error", "Please enter a valid email address.");
 			return;
 		}
-		setLoading(true);
 		try {
 			await loginUser(email, password);
 		} catch (error: any) {
@@ -45,8 +43,6 @@ const LoginScreen = () => {
 					? "User not found. Please check your email."
 					: "Sign in failed. Please check your credentials.";
 			Alert.alert("Sign In Failed", errorMessage);
-		} finally {
-			setLoading(false);
 		}
 	};
 	return (

@@ -2,9 +2,10 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Redirect, Tabs } from "expo-router";
 import { Pressable, useColorScheme } from "react-native";
 
-import Colors from "../../constants/Colors";
+import Colors, { Theme } from "../../constants/Colors";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContexts";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -25,37 +26,55 @@ export default function TabLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-				headerShown: false,
+				headerShown: true,
+				tabBarActiveTintColor: Theme.color.primary.DEFAULT,
+				tabBarInactiveTintColor: Theme.color.primary[800],
+				tabBarStyle: {
+					backgroundColor: Theme.color.secondary[250], // Background color of the tab bar
+				},
+				tabBarLabelStyle: {
+					fontSize: 12,
+					fontFamily: "Nunito_500Medium",
+				},
+				tabBarShowLabel: true,
+				headerTintColor: Theme.color.secondary[100],
+				headerStyle: {
+					backgroundColor: Theme.color.primary[550],
+				},
 			}}
 		>
 			<Tabs.Screen
 				name="dashboard"
 				options={{
-					headerShown: true,
 					title: "Dashboard",
-					tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-					headerRight: () => (
-						<Link href="/modal" asChild>
-							<Pressable>
-								{({ pressed }) => (
-									<FontAwesome
-										name="info-circle"
-										size={25}
-										color={Colors[colorScheme ?? "light"].text}
-										style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-									/>
-								)}
-							</Pressable>
-						</Link>
-					),
+					tabBarIcon: ({ focused, color, size }) => {
+						const iconName = focused
+							? "game-controller"
+							: "game-controller-outline";
+						return (
+							<Ionicons
+								name={iconName}
+								size={size}
+								color={focused ? Theme.color.primary.DEFAULT : color}
+							/>
+						);
+					},
 				}}
 			/>
 			<Tabs.Screen
 				name="profile"
 				options={{
 					title: "Profile",
-					tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+					tabBarIcon: ({ focused, color, size }) => {
+						const iconName = focused ? "person" : "person-outline";
+						return (
+							<Ionicons
+								name={iconName}
+								size={size}
+								color={focused ? Theme.color.primary.DEFAULT : color}
+							/>
+						);
+					},
 				}}
 			/>
 		</Tabs>
