@@ -25,6 +25,7 @@ import {
 } from "@expo-google-fonts/nunito";
 import { Wellfleet_400Regular } from "@expo-google-fonts/wellfleet";
 import { Theme } from "../constants/Colors";
+import AuthProvider from "../contexts/AuthContexts";
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -88,10 +89,12 @@ function RootLayoutNav() {
 	}
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<Stack>
-				<Stack.Screen name="(users)" options={{ headerShown: false }} />
-				<Stack.Screen name="modal" options={{ presentation: "modal" }} />
-			</Stack>
+			<AuthProvider>
+				<Stack initialRouteName="login">
+					<Stack.Screen name="(users)" options={{ headerShown: false }} />
+					<Stack.Screen name="modal" options={{ presentation: "modal" }} />
+				</Stack>
+			</AuthProvider>
 		</ThemeProvider>
 	);
 }

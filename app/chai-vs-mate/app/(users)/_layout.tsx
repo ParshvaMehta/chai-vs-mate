@@ -1,8 +1,10 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs, Stack } from "expo-router";
+import { Link, Tabs, Stack, Redirect } from "expo-router";
 import { Pressable, useColorScheme } from "react-native";
 
 import Colors from "../../constants/Colors";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContexts";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -16,46 +18,19 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
+	const { user } = useContext(AuthContext);
+	if (user) {
+		return <Redirect href="/dashboard" />;
+	}
 
 	return (
-		// <Tabs
-		// 	screenOptions={{
-		// 		tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-		// 	}}
-		// >
-		// 	<Tabs.Screen
-		// 		name="index"
-		// 		options={{
-		// 			headerShown: false,
-		// 			title: "Tab One",
-		// 			tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-		// 			headerRight: () => (
-		// 				<Link href="/modal" asChild>
-		// 					<Pressable>
-		// 						{({ pressed }) => (
-		// 							<FontAwesome
-		// 								name="info-circle"
-		// 								size={25}
-		// 								color={Colors[colorScheme ?? "light"].text}
-		// 								style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-		// 							/>
-		// 						)}
-		// 					</Pressable>
-		// 				</Link>
-		// 			),
-		// 		}}
-		// 	/>
-		// 	<Tabs.Screen
-		// 		name="two"
-		// 		options={{
-		// 			title: "Tab Two",
-		// 			tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-		// 		}}
-		// 	/>
-		// </Tabs>
-		<Stack>
+		<Stack initialRouteName="login">
 			<Stack.Screen name="login" options={{ headerShown: false }} />
 			<Stack.Screen name="signup" options={{ headerShown: false }} />
 		</Stack>
 	);
 }
+
+export const unstable_settings = {
+	initialRouteName: "login",
+};

@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword, Auth } from "firebase/auth";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
 	View,
 	Text,
@@ -12,20 +12,21 @@ import {
 	Keyboard,
 	Platform,
 } from "react-native";
-import { FIREBASE_AUTH } from "../../constants/FireBaseConfig";
 import { validateEmail } from "../../constants/Utils";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import InputWithIcon from "../../components/Input/InputWithIcon";
 import { Theme } from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../contexts/AuthContexts";
+import { Redirect } from "expo-router";
 
 const LoginScreen = () => {
+	const { loginUser, user } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 	const passwordInputRef = useRef<TextInput>(null);
-	const auth: Auth = FIREBASE_AUTH;
 	const handleLoginWithEmail = async () => {
 		if (!email || !password) {
 			Alert.alert("Validation Error", "Please enter both email and password.");
@@ -38,7 +39,8 @@ const LoginScreen = () => {
 		}
 		setLoading(true);
 		try {
-			await signInWithEmailAndPassword(auth, email, password);
+			await loginUser(email, password);
+			return navigation.navigate("/dashboard");
 		} catch (error: any) {
 			console.log(error);
 			const errorMessage =
@@ -50,7 +52,6 @@ const LoginScreen = () => {
 			setLoading(false);
 		}
 	};
-
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView
