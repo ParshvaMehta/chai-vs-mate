@@ -2,7 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";
-import { GAME_TYPE, SIZE, findBestMove } from "./helper/tic-tac-toe-helper";
+import {
+	BOT_LEVEL,
+	GAME_TYPE,
+	SIZE,
+	findBestMove,
+} from "./helper/tic-tac-toe-helper";
 import { delay } from "../../constants/Utils";
 import { useLocalSearchParams } from "expo-router";
 
@@ -16,23 +21,56 @@ const TicTacToe: React.FC = () => {
 	);
 	const local = useLocalSearchParams();
 	const { gameType } = local;
+	const isSinglePlayer = useMemo(
+		() => gameType === GAME_TYPE.SINGLE_PLAYER,
+		[gameType]
+	);
 	const [isPlayerX, setIsPlayerX] = useState<boolean>(Boolean(Date.now() % 2));
 	const [winner, setWinner] = useState<string | null>(null);
+	const [botLevel, setBotLevel] = useState<string>(
+		Boolean(Date.now() % 2) ? BOT_LEVEL.EASY : BOT_LEVEL.HARD
+	);
+
 	const player1 = useMemo(() => {
-		return gameType === GAME_TYPE.SINGLE_PLAYER ? "You" : "Player 1";
-	}, [gameType]);
+		return isSinglePlayer ? "You" : "Player 1";
+	}, [isSinglePlayer]);
 
 	const player2 = useMemo(() => {
-		return gameType === GAME_TYPE.SINGLE_PLAYER ? "Computer" : "Player 2";
-	}, [gameType]);
+		return isSinglePlayer ? "Computer" : "Player 2";
+	}, [isSinglePlayer]);
 
 	const makeBotMove = async () => {
-		if (winner || gameType !== GAME_TYPE.SINGLE_PLAYER) {
+		if (winner || !isSinglePlayer) {
 			return;
 		}
-		const bestMove = await findBestMove(board);
 		await delay(1000);
+		if (botLevel === BOT_LEVEL.EASY) {
+			makeEasyBotMove();
+			return;
+		}
+		makeHardBotMove();
+		return;
+	};
+	const makeHardBotMove = async () => {
+		const bestMove = await findBestMove(board);
 		await handleClick(bestMove.row, bestMove.col);
+	};
+	const makeEasyBotMove = () => {
+		const emptyCells = getEmptyCells();
+		const randomIndex = Math.floor(Math.random() * emptyCells.length);
+		const randomCell = emptyCells[randomIndex];
+		handleClick(randomCell[0], randomCell[1]);
+	};
+	const getEmptyCells = () => {
+		const emptyCells: number[][] = [];
+		for (let i = 0; i < SIZE; i++) {
+			for (let j = 0; j < SIZE; j++) {
+				if (!board[i][j]) {
+					emptyCells.push([i, j]);
+				}
+			}
+		}
+		return emptyCells;
 	};
 	useEffect(() => {
 		checkWinner();
@@ -161,6 +199,7 @@ const TicTacToe: React.FC = () => {
 		setBoard(Array(SIZE).fill(Array(SIZE).fill(null)));
 		setIsPlayerX(Boolean(Date.now() % 2));
 		setWinner(null);
+		setBotLevel(Boolean(Date.now() % 2) ? BOT_LEVEL.EASY : BOT_LEVEL.HARD);
 	};
 
 	return (
@@ -169,13 +208,24 @@ const TicTacToe: React.FC = () => {
 				<Text
 					style={{
 						...styles.player,
-						transform: [{ rotate: "180deg" }],
+						transform: [{ rotate: isSinglePlayer ? "0deg" : "180deg" }],
 						fontWeight: isPlayerX ? "300" : "600",
 						color: isPlayerX
 							? Theme.color.secondary[700]
 							: Theme.color.danger[550],
 					}}
-				>{`${player2} (${O})`}</Text>
+				>
+					{`${player2} (${O})`}{" "}
+					{isSinglePlayer && (
+						<Text
+							style={{
+								fontSize: 16,
+							}}
+						>
+							{botLevel}
+						</Text>
+					)}
+				</Text>
 			</View>
 			{renderBoard()}
 			{winner && <Text style={styles.winnerText}>{`Winner: ${winner}`}</Text>}

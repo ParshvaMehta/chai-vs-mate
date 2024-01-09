@@ -3,6 +3,10 @@ export enum GAME_TYPE {
 	MULTI_PLAYER = "MULTI_PLAYER",
 	ONLINE = "ONLINE",
 }
+export enum BOT_LEVEL {
+	EASY = "easy",
+	HARD = "hard",
+}
 export const SIZE = 3;
 export const findBestMove = (board: string[][]) => {
 	let bestVal = -Infinity;
