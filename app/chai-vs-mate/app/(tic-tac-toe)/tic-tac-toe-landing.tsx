@@ -76,7 +76,7 @@ const TicTacToeLanding: React.FC = () => {
 			/>
 			<Button
 				iconName="people-outline"
-				text="Multi Player"
+				text="Two Players"
 				onPress={handleMultiPlayerGame}
 			/>
 			<Button

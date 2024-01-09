@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";
-import { SIZE, findBestMove } from "./helper/tic-tac-toe-helper";
+import { GAME_TYPE, SIZE, findBestMove } from "./helper/tic-tac-toe-helper";
 import { delay } from "../../constants/Utils";
+import { useLocalSearchParams } from "expo-router";
 
 const X = "X";
 const O = "O";
@@ -13,12 +14,20 @@ const TicTacToe: React.FC = () => {
 	const [board, setBoard] = useState<string[][]>(
 		Array(SIZE).fill(Array(SIZE).fill(null))
 	);
+	const local = useLocalSearchParams();
+	const { gameType } = local;
 	const [isPlayerX, setIsPlayerX] = useState<boolean>(Boolean(Date.now() % 2));
 	const [winner, setWinner] = useState<string | null>(null);
-	const [player1, setPlayer1] = useState<string>("Player 1");
-	const [player2, setPlayer2] = useState<string>("Player 2");
+	const player1 = useMemo(() => {
+		return gameType === GAME_TYPE.SINGLE_PLAYER ? "You" : "Player 1";
+	}, [gameType]);
+
+	const player2 = useMemo(() => {
+		return gameType === GAME_TYPE.SINGLE_PLAYER ? "Computer" : "Player 2";
+	}, [gameType]);
+
 	const makeBotMove = async () => {
-		if (winner) {
+		if (winner || gameType !== GAME_TYPE.SINGLE_PLAYER) {
 			return;
 		}
 		const bestMove = await findBestMove(board);

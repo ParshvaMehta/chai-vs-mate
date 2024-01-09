@@ -1,7 +1,7 @@
 export enum GAME_TYPE {
-	SINGLE_PLAYER,
-	MULTI_PLAYER,
-	ONLINE,
+	SINGLE_PLAYER = "SINGLE_PLAYER",
+	MULTI_PLAYER = "MULTI_PLAYER",
+	ONLINE = "ONLINE",
 }
 export const SIZE = 3;
 export const findBestMove = (board: string[][]) => {
