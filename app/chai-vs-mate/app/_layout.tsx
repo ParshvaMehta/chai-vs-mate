@@ -94,6 +94,7 @@ function RootLayoutNav() {
 					<Stack.Screen name="(users)" options={{ headerShown: false }} />
 					<Stack.Screen name="(app)" options={{ headerShown: false }} />
 					<Stack.Screen name="(sequence)" options={{ headerShown: false }} />
+					<Stack.Screen name="(tic-tac-toe)" options={{ headerShown: false }} />
 				</Stack>
 			</AuthProvider>
 		</ThemeProvider>

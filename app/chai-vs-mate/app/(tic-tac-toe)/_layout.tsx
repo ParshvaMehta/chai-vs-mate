@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContexts";
 import { Theme } from "../../constants/Colors";
 
-export default function SequenceGameLayout() {
+export default function TicTacToeGameLayout() {
 	const { user } = useContext(AuthContext);
 	if (!user) {
 		return <Redirect href="/(users)/login" />;
@@ -11,10 +11,8 @@ export default function SequenceGameLayout() {
 
 	return (
 		<Stack
-			initialRouteName="sequence-landing"
 			screenOptions={{
 				headerShown: true,
-
 				headerTintColor: Theme.color.secondary[100],
 				headerStyle: {
 					backgroundColor: Theme.color.primary[550],
@@ -22,25 +20,13 @@ export default function SequenceGameLayout() {
 			}}
 		>
 			<Stack.Screen
-				name="sequence-landing"
-				options={{ headerShown: true, title: "Sequence" }}
+				name="tic-tac-toe-landing"
+				options={{ headerShown: true, title: "Select Game" }}
 			/>
 			<Stack.Screen
-				name="join-sequence"
-				options={{ headerShown: true, title: "Join Game" }}
-			/>
-			<Stack.Screen
-				name="sequence-waiting-area"
-				options={{ headerShown: true, title: "Waiting zone" }}
-			/>
-			<Stack.Screen
-				name="sequence-board"
-				options={{ title: "Sequence", headerShown: true }}
+				name="tic-tac-toe-board"
+				options={{ headerShown: true, title: "Tic Tac Toe" }}
 			/>
 		</Stack>
 	);
 }
-
-export const unstable_settings = {
-	initialRouteName: "login",
-};
