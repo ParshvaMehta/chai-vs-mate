@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";
+import { SIZE, findBestMove } from "./helper/tic-tac-toe-helper";
+import { delay } from "../../constants/Utils";
 
-const SIZE = 3; // Size of the Tic Tac Toe board
 const X = "X";
 const O = "O";
 
@@ -16,10 +17,23 @@ const TicTacToe: React.FC = () => {
 	const [winner, setWinner] = useState<string | null>(null);
 	const [player1, setPlayer1] = useState<string>("Player 1");
 	const [player2, setPlayer2] = useState<string>("Player 2");
-
+	const makeBotMove = async () => {
+		if (winner) {
+			return;
+		}
+		const bestMove = await findBestMove(board);
+		await delay(1000);
+		await handleClick(bestMove.row, bestMove.col);
+	};
 	useEffect(() => {
 		checkWinner();
 	}, [board]);
+
+	useEffect(() => {
+		if (!isPlayerX) {
+			makeBotMove();
+		}
+	}, [isPlayerX]);
 
 	const checkWinner = () => {
 		for (let i = 0; i < SIZE; i++) {
@@ -128,7 +142,7 @@ const TicTacToe: React.FC = () => {
 		<View style={styles.board}>
 			{board.map((row, i) => (
 				<View key={i} style={styles.row}>
-					{row.map((col, j) => renderCell(i, j))}
+					{row.map((_col, j) => renderCell(i, j))}
 				</View>
 			))}
 		</View>
@@ -159,7 +173,6 @@ const TicTacToe: React.FC = () => {
 			<TouchableOpacity style={styles.resetButton} onPress={resetGame}>
 				<Text style={styles.resetButtonText}>Reset Game</Text>
 			</TouchableOpacity>
-
 			<View>
 				<Text
 					style={{
