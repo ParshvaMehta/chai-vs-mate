@@ -18,7 +18,7 @@ interface CardProps {
 		row?: number,
 		col?: number,
 		disable?: boolean
-	) => void;
+	) => void | Promise<void>;
 	onDiscardPress?: (
 		suit: string,
 		rank: string | number,

@@ -62,11 +62,25 @@ export function SequenceBoard() {
 		});
 	}, [user, gameUUID]);
 
-	const handleMyCardPress = (suit: string, value: string) => {
+	const handleMyCardPress = (
+		suit: string,
+		value: string,
+		_coin: string,
+		_row: number,
+		_col: number,
+		_disable: boolean
+	) => {
 		setSelectedCard([value, suit].join("-"));
 	};
 
-	const discardMyCard = async (suit, value, coin, row, col, disable) => {
+	const discardMyCard = async (
+		suit: string,
+		value: string | number,
+		coin: string,
+		_row: number,
+		_col: number,
+		disable: boolean
+	) => {
 		const card = [value, suit].join("-");
 		if (!isMyTurn || disable || coin || card !== selectedCard) {
 			return;
@@ -82,14 +96,21 @@ export function SequenceBoard() {
 		});
 	};
 
-	const onBoardCardPress = async (suit, value, coin, row, col, disable) => {
+	const onBoardCardPress = async (
+		suit: string,
+		value: string | number,
+		coin: string,
+		row: number,
+		col: number,
+		disable: boolean
+	) => {
 		try {
-			const card = `${value}-${suit}`;
 			// validate your turn
 			if (!isMyTurn) {
-				// Alert.alert('oops!', `It's not your turn buddy`);
 				return;
 			}
+
+			const card = `${value}-${suit}`;
 			let newGame = {};
 			Object.assign(newGame, gameData);
 			let {
@@ -103,6 +124,7 @@ export function SequenceBoard() {
 				winning_sequence,
 				winner,
 			} = newGame as SequenceGame;
+
 			// check if the game is completed or not.
 			if (game_status === GameStatus.COMPLETED) {
 				Alert.alert("oops!", `Game Over!`);
@@ -118,6 +140,7 @@ export function SequenceBoard() {
 				console.info("My Card not found in Database");
 				return;
 			}
+
 			let cardIndex = myCard.indexOf(card);
 			const twoEyeJackIndex =
 				myCard.indexOf("J-C") < 0
@@ -134,6 +157,7 @@ export function SequenceBoard() {
 					card,
 					user.displayName
 				);
+
 				// find if have two eye or one eye jack
 				cardIndex = !coin ? twoEyeJackIndex : oneEyeJackIndex;
 				if (cardIndex < 0) {
@@ -141,19 +165,22 @@ export function SequenceBoard() {
 					return;
 				}
 			}
+
 			// check is that position have any full sequence and it's not own coin
 			const isAllowToRemoveCoin = !disable && coin !== player?.team;
 			if (coin && !isAllowToRemoveCoin) {
 				Alert.alert("oops!", `Not allowed to put / remove coin here!!`);
 				return;
 			}
+
 			let newCoin = player?.team;
 			if (oneEyeJackIndex >= 0 && coin && isAllowToRemoveCoin) {
 				cardIndex = oneEyeJackIndex;
 				newCoin = "";
 			}
+
 			board[row][col].coin = newCoin as CoinEnum;
-			players[turn_idx].my_cards.splice(cardIndex, 1);
+			players[turn_idx].my_cards?.splice(cardIndex, 1);
 			// if player has removed the card , then no meaning of checking sequence
 			if (newCoin !== "") {
 				const { sequences: newSequence, board: newBoard } = await hasSequence(
@@ -235,18 +262,25 @@ export function SequenceBoard() {
 						{title} :{" "}
 					</Text>
 				)}
-				<Coin team={turnPlayer?.team} size={size} />
+				{turnPlayer?.team && <Coin team={turnPlayer?.team} size={size} />}
 				{!isYou && (turnPlayer.displayName || turnPlayer.email)}
 				{isYou && "You"}
 			</Text>
 		);
 	};
-	const renderWinner = (winnerTeam) => {
+	const renderWinner = (winnerTeam: string = "") => {
+		if (!gameData || !winnerTeam) {
+			return "";
+		}
 		const { players } = gameData;
 		const winners = players
 			.map((p, i) => (p.team === winnerTeam ? i.toString() : undefined))
 			.filter((x) => x);
-		return <>{winners?.map((w) => renderTurn("", parseInt(w), 30))}</>;
+		return (
+			<>
+				{winners?.map((w) => renderTurn("", parseInt(w?.toString() || ""), 30))}
+			</>
+		);
 	};
 
 	const renderBoard = () => {
@@ -338,7 +372,7 @@ export function SequenceBoard() {
 				</ScrollView>
 				<View style={styles.myCardContainer}>
 					{player?.team && <Coin team={player?.team} size={36} />}
-					{player?.my_cards.map((c, i) => {
+					{player?.my_cards?.map((c, i) => {
 						const [rank, suit] = c.split("-");
 						return (
 							<View
