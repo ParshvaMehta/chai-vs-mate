@@ -10,12 +10,15 @@ import {
 } from "./helper/tic-tac-toe-helper";
 import { delay } from "../../constants/Utils";
 import { useLocalSearchParams } from "expo-router";
+import SoundService from "../../services/SoundService";
 
 const X = "X";
 const O = "O";
+const MoveSound = require("../../assets/sounds/move_sound.mp3");
 
 const TicTacToe: React.FC = () => {
 	useKeepAwake();
+	// Create a reference to the sound
 	const [board, setBoard] = useState<string[][]>(
 		Array(SIZE).fill(Array(SIZE).fill(null))
 	);
@@ -43,7 +46,7 @@ const TicTacToe: React.FC = () => {
 		if (winner || !isSinglePlayer) {
 			return;
 		}
-		await delay(1000);
+		await delay(300);
 		if (botLevel === BOT_LEVEL.EASY) {
 			makeEasyBotMove();
 			return;
@@ -82,6 +85,13 @@ const TicTacToe: React.FC = () => {
 		}
 	}, [isPlayerX]);
 
+	useEffect(() => {
+		SoundService.loadSoundAsync(MoveSound);
+		return () => {
+			SoundService.unloadSoundAsync();
+		};
+	}, []);
+
 	const checkWinner = () => {
 		for (let i = 0; i < SIZE; i++) {
 			// Check rows
@@ -93,7 +103,6 @@ const TicTacToe: React.FC = () => {
 				setWinner(board[i][0]);
 				return;
 			}
-
 			// Check columns
 			if (
 				board[0][i] === board[1][i] &&
@@ -124,11 +133,11 @@ const TicTacToe: React.FC = () => {
 		}
 	};
 
-	const handleClick = (row: number, col: number) => {
+	const handleClick = async (row: number, col: number) => {
 		if (board[row][col] || winner) {
 			return; // Cell already filled or game over
 		}
-
+		SoundService.playSoundAsync();
 		const newBoard = board.map((r, i) =>
 			r.map((c, j) => (i === row && j === col ? (isPlayerX ? X : O) : c))
 		);
