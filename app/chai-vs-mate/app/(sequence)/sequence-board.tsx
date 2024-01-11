@@ -19,6 +19,8 @@ import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";
 import { useLocalSearchParams } from "expo-router";
 import { AuthContext } from "../../contexts/AuthContexts";
+import SoundService from "../../services/SoundService";
+const MoveSound = require("../../assets/sounds/move_sound.mp3");
 
 export function SequenceBoard() {
 	useKeepAwake();
@@ -61,6 +63,12 @@ export function SequenceBoard() {
 			await setGameData(data);
 		});
 	}, [user, gameUUID]);
+	useEffect(() => {
+		SoundService.loadSoundAsync(MoveSound);
+		return () => {
+			SoundService.unloadSoundAsync();
+		};
+	}, []);
 
 	const handleMyCardPress = (
 		suit: string,
@@ -223,6 +231,7 @@ export function SequenceBoard() {
 			//     })
 			// );
 			// return;
+			SoundService.playSoundAsync();
 			await update(gameRef, {
 				game_status,
 				players,
@@ -249,7 +258,11 @@ export function SequenceBoard() {
 		return (
 			<Text
 				key={`player_render_${index}`}
-				style={{ fontSize: size, justifyContent: "center" }}
+				style={{
+					fontSize: size,
+					justifyContent: "center",
+					color: Theme.color.primary[500],
+				}}
 			>
 				{title && (
 					<Text
@@ -283,7 +296,7 @@ export function SequenceBoard() {
 		);
 	};
 
-	const renderBoard = () => {
+	const renderBoard = useMemo(() => {
 		return (
 			<View
 				key={"sequence_board"}
@@ -291,7 +304,7 @@ export function SequenceBoard() {
 					width: "100%",
 					flex: 1,
 					flexDirection: "column",
-					gap: 4,
+					gap: 1,
 				}}
 			>
 				{board?.map((rows, rowIdx) => {
@@ -301,7 +314,6 @@ export function SequenceBoard() {
 							style={{
 								flex: 1,
 								flexDirection: "row",
-								gap: 3,
 							}}
 						>
 							{rows?.map((cols, colIdx) => {
@@ -333,7 +345,8 @@ export function SequenceBoard() {
 				})}
 			</View>
 		);
-	};
+	}, [board, selectedCard]);
+
 	const renderContent = () => {
 		if (!gameData) {
 			return (
@@ -367,11 +380,21 @@ export function SequenceBoard() {
 					{renderTurn("Turn", gameData?.turn_idx)}
 					{renderTurn("Next", gameData?.next_turn_idx)}
 				</View>
-				<ScrollView contentContainerStyle={styles.deck}>
-					{renderBoard()}
+				<ScrollView contentContainerStyle={styles.board}>
+					{renderBoard}
 				</ScrollView>
 				<View style={styles.myCardContainer}>
-					{player?.team && <Coin team={player?.team} size={36} />}
+					{player?.team && (
+						<View
+							style={{
+								alignContent: "center",
+								height: "auto",
+								justifyContent: "center",
+							}}
+						>
+							<Coin team={player?.team} size={36} />
+						</View>
+					)}
 					{player?.my_cards?.map((c, i) => {
 						const [rank, suit] = c.split("-");
 						return (
@@ -400,33 +423,39 @@ export function SequenceBoard() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20,
-		backgroundColor: Theme.color.secondary[150],
+		padding: 12,
+		backgroundColor: Theme.color.secondary[300],
 		width: "100%",
 		gap: 0,
+		color: "white",
 	},
 	turn: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		marginBottom: 10,
+		color: "white",
 	},
-	deck: {
+	board: {
 		flexDirection: "row",
 		flexWrap: "wrap",
 		justifyContent: "center",
 		gap: 4,
+		padding: 5,
+		color: "white",
 	},
 	myCard: {
 		position: "relative",
 		flex: 1,
 	},
 	myCardContainer: {
-		width: "80%",
+		width: "100%",
 		height: "auto",
 		flexDirection: "row",
 		flexWrap: "wrap",
-		gap: 5,
+		gap: 6,
 		justifyContent: "center",
+		alignContent: "center",
+		padding: 10,
 	},
 	gameOverText: {
 		fontSize: 50,

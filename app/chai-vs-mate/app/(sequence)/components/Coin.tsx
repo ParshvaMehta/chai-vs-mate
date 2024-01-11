@@ -18,7 +18,11 @@ const Coin: React.FC<CoinProps> = ({ team, size = 36 }) => {
 		return;
 	}
 	return (
-		<Ionicons name="disc" size={size} color={coinColor[team] || "black"} />
+		<Ionicons
+			name="disc-sharp"
+			size={size}
+			color={coinColor[team] || "black"}
+		/>
 	);
 };
 

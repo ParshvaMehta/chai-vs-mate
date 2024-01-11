@@ -33,7 +33,27 @@ interface CardProps {
 	isSelected?: boolean;
 }
 
-const DEFAULT_FONT_SIZE = 22;
+const DEFAULT_FONT_SIZE = 24;
+const DEFAULT_ICON_SIZE = DEFAULT_FONT_SIZE + 4;
+const suitIcon = {
+	S: "cards-spade",
+	H: "cards-heart",
+	C: "cards-club",
+	D: "cards-diamond",
+	J: "cards-outline",
+	ONE_EYE: "exposure-neg-1",
+	TWO_EYE: "exposure-plus-1",
+};
+const textColor = {
+	S: "#181818",
+	H: Theme.color.danger[650],
+	C: "#181818",
+	D: Theme.color.danger[650],
+	J: Theme.color.primary.DEFAULT,
+	ONE_EYE: Theme.color["color-4"][750],
+	TWO_EYE: Theme.color.success[800],
+	SELECTED: Theme.color.primary[500],
+};
 
 const Card: React.FC<CardProps> = ({
 	suit,
@@ -47,26 +67,6 @@ const Card: React.FC<CardProps> = ({
 	onPress,
 	onDiscardPress,
 }) => {
-	const suitIcon = {
-		S: "cards-spade",
-		H: "cards-heart",
-		C: "cards-club",
-		D: "cards-diamond",
-		J: "cards-outline",
-		ONE_EYE: "exposure-neg-1",
-		TWO_EYE: "exposure-plus-1",
-	};
-
-	const textColor = {
-		S: "#181818",
-		H: Theme.color.danger[650],
-		C: "#181818",
-		D: Theme.color.danger[650],
-		J: Theme.color.primary.DEFAULT,
-		ONE_EYE: Theme.color["color-4"][750],
-		TWO_EYE: Theme.color.success[800],
-		SELECTED: Theme.color.primary[500],
-	};
 	const rankStyle = useMemo(() => {
 		let color = textColor[suit] || "#000";
 		if (rank === Rank.Jack) {
@@ -101,7 +101,7 @@ const Card: React.FC<CardProps> = ({
 			if (isSelected) {
 				color = textColor.SELECTED;
 			}
-			return <MIcon name={icon} color={color} size={DEFAULT_FONT_SIZE} />;
+			return <MIcon name={icon} color={color} size={DEFAULT_ICON_SIZE} />;
 		}
 		if (isSelected) {
 			color = textColor.SELECTED;
@@ -110,11 +110,10 @@ const Card: React.FC<CardProps> = ({
 			<Icon
 				name={icon}
 				color={color}
-				size={suit === Suit.Joker ? 32 : DEFAULT_FONT_SIZE}
+				size={suit === Suit.Joker ? 32 : DEFAULT_ICON_SIZE}
 			/>
 		);
 	}, [suit, rank, isSelected]);
-
 	const getCardStyle = () => {
 		let style = styles.card;
 		if (isSelected) {
@@ -155,9 +154,9 @@ const Card: React.FC<CardProps> = ({
 			}
 		>
 			{rank && rank.toString() !== "0" && <Text style={rankStyle}>{rank}</Text>}
-			{suitSymbol}
+			<View style={{ marginBottom: 5 }}>{suitSymbol}</View>
 			<View style={styles.coin}>
-				{coin && coin !== "W" && <Coin team={coin} size={28} />}
+				{coin && coin !== "W" && <Coin team={coin} size={DEFAULT_ICON_SIZE} />}
 			</View>
 			<View style={styles.discardContainer}>
 				{!coin && canDiscard && (
@@ -167,7 +166,7 @@ const Card: React.FC<CardProps> = ({
 							onDiscardPress?.(suit, rank, coin, row, col, disable)
 						}
 						name="trash-bin"
-						size={30}
+						size={DEFAULT_ICON_SIZE}
 						color={Theme.color.warning[750]}
 					/>
 				)}
@@ -179,15 +178,17 @@ const Card: React.FC<CardProps> = ({
 const styles = StyleSheet.create({
 	card: {
 		width: "100%",
-		height: DEFAULT_FONT_SIZE * 2 + 10,
+		height: DEFAULT_FONT_SIZE * 2 + 12,
 		borderWidth: 1,
 		borderRadius: 8,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: Theme.color["info"][100],
+		backgroundColor: Theme.color.info[100],
 		elevation: 2,
 	},
 	rank: {
+		marginTop: 5,
+		alignItems: "center",
 		fontWeight: "400",
 		fontSize: DEFAULT_FONT_SIZE,
 		fontFamily: "Wellfleet_400Regular",

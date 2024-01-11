@@ -13,13 +13,16 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@config-plugins/react-native-webrtc": "^7.0.0",
     "@expo-google-fonts/nunito": "^0.2.3",
     "@expo-google-fonts/wellfleet": "^0.2.3",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native": "^6.0.2",
     "expo": "~49.0.15",
+    "expo-av": "~13.4.1",
     "expo-font": "~11.4.0",
+    "expo-keep-awake": "~12.3.0",
     "expo-linking": "~5.0.2",
     "expo-router": "^2.0.0",
     "expo-splash-screen": "~0.20.5",
@@ -35,8 +38,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
-    "expo-keep-awake": "~12.3.0",
-    "expo-av": "~13.4.1"
+    "react-native-webrtc": "^118.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,10 +1,13 @@
-import { Stack, Redirect } from "expo-router";
+import { Stack, Redirect, useNavigation } from "expo-router";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContexts";
 import { Theme } from "../../constants/Colors";
+import { TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function SequenceGameLayout() {
 	const { user } = useContext(AuthContext);
+	const navigation = useNavigation();
 	if (!user) {
 		return <Redirect href="/(users)/login" />;
 	}
@@ -23,7 +26,20 @@ export default function SequenceGameLayout() {
 		>
 			<Stack.Screen
 				name="sequence-landing"
-				options={{ headerShown: true, title: "Sequence" }}
+				options={{
+					headerShown: true,
+					title: "Sequence",
+					headerLeft: () => (
+						<TouchableOpacity onPress={() => navigation.navigate("dashboard")}>
+							<Icon
+								name="arrow-back-outline"
+								size={24}
+								color={"white"}
+								style={{ marginRight: 8 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
 			/>
 			<Stack.Screen
 				name="join-sequence"
@@ -35,7 +51,22 @@ export default function SequenceGameLayout() {
 			/>
 			<Stack.Screen
 				name="sequence-board"
-				options={{ title: "Sequence", headerShown: true }}
+				options={{
+					title: "Sequence",
+					headerShown: true,
+					headerLeft: () => (
+						<TouchableOpacity
+							onPress={() => navigation.navigate("sequence-landing")}
+						>
+							<Icon
+								name="arrow-back-outline"
+								size={24}
+								color={"white"}
+								style={{ marginRight: 8 }}
+							/>
+						</TouchableOpacity>
+					),
+				}}
 			/>
 		</Stack>
 	);
