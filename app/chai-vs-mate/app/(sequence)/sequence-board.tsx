@@ -13,7 +13,11 @@ import { FIREBASE_DB } from "../../constants/FireBaseConfig";
 import { SequenceGame, GameStatus, Suit, CoinEnum } from "./helpers/types";
 import Card from "./components/Card";
 import Coin from "./components/Coin";
-import { getCardsForPlayers, hasSequence } from "./helpers/SequenceHelper";
+import {
+	getCardsForPlayers,
+	getNewCoinPosition,
+	hasSequence,
+} from "./helpers/SequenceHelper";
 import { useNavigation } from "@react-navigation/native";
 import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";
@@ -33,6 +37,9 @@ export function SequenceBoard() {
 	const [gameData, setGameData] = useState<SequenceGame>();
 	const board = useMemo(() => gameData?.board, [gameData]);
 	const [selectedCard, setSelectedCard] = useState<string>("");
+	const lastCard = useMemo(() => {
+		return gameData?.last_card;
+	}, [gameData]);
 	const canDiscard = useMemo(() => {
 		if (!gameData || !gameData.board || !selectedCard) {
 			return false;
@@ -57,12 +64,22 @@ export function SequenceBoard() {
 		const { turn_idx = -1, players } = gameData;
 		return players[turn_idx]?.uid === user?.uid;
 	}, [gameData]);
+	const playSound = async () => {
+		const soundObj = await SoundService.getSound();
+		if (!soundObj?._loaded) {
+			await SoundService.loadSoundAsync(MoveSound);
+		}
+		await SoundService.playSoundAsync();
+	};
+
 	useEffect(() => {
 		onValue(gameRef, async (snapshot) => {
 			const data = snapshot.val() as SequenceGame;
+			await playSound();
 			await setGameData(data);
 		});
 	}, [user, gameUUID]);
+
 	useEffect(() => {
 		SoundService.loadSoundAsync(MoveSound);
 		return () => {
@@ -231,7 +248,7 @@ export function SequenceBoard() {
 			//     })
 			// );
 			// return;
-			SoundService.playSoundAsync();
+			const last_card = board?.[row][col];
 			await update(gameRef, {
 				game_status,
 				players,
@@ -242,6 +259,7 @@ export function SequenceBoard() {
 				next_turn_idx,
 				winner,
 				completed_sequence,
+				last_card,
 			});
 		} catch (e) {
 			console.error(e);
@@ -336,6 +354,9 @@ export function SequenceBoard() {
 											col={cols.col}
 											disable={cols.disable}
 											isSelected={cols.card === selectedCard}
+											animateCoin={
+												cols.row === lastCard?.row && cols.col === lastCard?.col
+											}
 										/>
 									</View>
 								);
@@ -345,7 +366,7 @@ export function SequenceBoard() {
 				})}
 			</View>
 		);
-	}, [board, selectedCard]);
+	}, [board, selectedCard, lastCard]);
 
 	const renderContent = () => {
 		if (!gameData) {

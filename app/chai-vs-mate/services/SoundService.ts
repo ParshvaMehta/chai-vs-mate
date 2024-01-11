@@ -18,10 +18,18 @@ const SoundService = {
 			console.error("Failed to unload sound", error);
 		}
 	},
-
+	async getSound() {
+		try {
+			return SoundService.soundObject;
+		} catch (error) {
+			console.error("Failed to unload sound", error);
+		}
+	},
 	async playSoundAsync() {
 		try {
-			await SoundService.soundObject.replayAsync();
+			if (SoundService.soundObject && SoundService.soundObject._loaded) {
+				await SoundService.soundObject.replayAsync();
+			}
 		} catch (error) {
 			console.error("Failed to play sound", error);
 		}

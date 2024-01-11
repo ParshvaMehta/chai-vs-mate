@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useMemo, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import MIcon from "react-native-vector-icons/MaterialIcons";
 import Coin from "./Coin";
@@ -31,6 +31,7 @@ interface CardProps {
 	col?: number;
 	disable?: boolean;
 	isSelected?: boolean;
+	animateCoin?: boolean;
 }
 
 const DEFAULT_FONT_SIZE = 24;
@@ -66,7 +67,27 @@ const Card: React.FC<CardProps> = ({
 	isSelected = false,
 	onPress,
 	onDiscardPress,
+	animateCoin,
 }) => {
+	const animatedValue = useRef(new Animated.Value(0)).current;
+
+	useEffect(() => {
+		if (animateCoin) {
+			Animated.timing(animatedValue, {
+				toValue: 1,
+				duration: 1000, // You can adjust the duration
+				useNativeDriver: false,
+			}).start();
+		} else {
+			animatedValue.setValue(0);
+		}
+	}, [animateCoin]);
+
+	const rotateY = animatedValue.interpolate({
+		inputRange: [0, 0.5, 1],
+		outputRange: ["0deg", "180deg", "360deg"],
+	});
+
 	const rankStyle = useMemo(() => {
 		let color = textColor[suit] || "#000";
 		if (rank === Rank.Jack) {
@@ -155,9 +176,15 @@ const Card: React.FC<CardProps> = ({
 		>
 			{rank && rank.toString() !== "0" && <Text style={rankStyle}>{rank}</Text>}
 			<View style={{ marginBottom: 5 }}>{suitSymbol}</View>
+
 			<View style={styles.coin}>
-				{coin && coin !== "W" && <Coin team={coin} size={DEFAULT_ICON_SIZE} />}
+				<Animated.View style={{ transform: [{ rotateY }] }}>
+					{coin && coin !== "W" && (
+						<Coin team={coin} size={DEFAULT_ICON_SIZE} />
+					)}
+				</Animated.View>
 			</View>
+
 			<View style={styles.discardContainer}>
 				{!coin && canDiscard && (
 					<Ionicons

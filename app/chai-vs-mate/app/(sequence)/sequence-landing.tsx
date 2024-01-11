@@ -37,6 +37,7 @@ const SequenceLandingScreen: React.FC = () => {
 					G: 0,
 				},
 				winner: "",
+				last_card: undefined,
 			};
 			await set(ref(FIREBASE_DB, `games/sequence/${gameUUID}`), game);
 			// Navigate to the JoinSequenceGame screen with the gameUUID as a parameter
