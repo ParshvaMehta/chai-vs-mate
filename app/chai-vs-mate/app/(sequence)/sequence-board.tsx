@@ -13,11 +13,7 @@ import { FIREBASE_DB } from "../../constants/FireBaseConfig";
 import { SequenceGame, GameStatus, Suit, CoinEnum } from "./helpers/types";
 import Card from "./components/Card";
 import Coin from "./components/Coin";
-import {
-	getCardsForPlayers,
-	getNewCoinPosition,
-	hasSequence,
-} from "./helpers/SequenceHelper";
+import { getCardsForPlayers, hasSequence } from "./helpers/SequenceHelper";
 import { useNavigation } from "@react-navigation/native";
 import { Theme } from "../../constants/Colors";
 import { useKeepAwake } from "expo-keep-awake";

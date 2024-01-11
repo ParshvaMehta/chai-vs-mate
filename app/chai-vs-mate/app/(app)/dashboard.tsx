@@ -29,13 +29,21 @@ const gamesData = [
 	},
 	{
 		id: "3",
+		title: "Video Call",
+		description: "Let's Meet!!",
+		screen: "(video)",
+		icon: "videocam-outline",
+		isActive: true,
+	},
+	{
+		id: "4",
 		title: "Ludo",
 		description: "Coming Soon!",
 		screen: "404",
 		icon: "alarm",
 	},
 	{
-		id: "4",
+		id: "5",
 		title: "Chess",
 		description: "Coming Soon!",
 		screen: "404",
