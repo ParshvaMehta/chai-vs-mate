@@ -146,7 +146,7 @@ const CallScreen: React.FC = () => {
 
 			onSnapshot(roomRef, (doc) => {
 				const data = doc.data();
-				if (!localPC.currentRemoteDescription && data.answer) {
+				if (!localPC?.remoteDescription && data?.answer) {
 					const rtcSessionDescription = new RTCSessionDescription(data.answer);
 					localPC.setRemoteDescription(rtcSessionDescription);
 				} else {
